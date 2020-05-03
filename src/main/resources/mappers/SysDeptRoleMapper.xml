@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yida.safety.dao.SysDeptRoleMapper">
+  <resultMap id="BaseResultMap" type="com.yida.safety.pojo.SysDeptRole">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dept_id" jdbcType="VARCHAR" property="deptId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dept_id, role_id, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dept_role
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_dept_role
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.yida.safety.pojo.SysDeptRole">
+    insert into sys_dept_role (id, dept_id, role_id, 
+      create_time)
+    values (#{id,jdbcType=VARCHAR}, #{deptId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yida.safety.pojo.SysDeptRole">
+    insert into sys_dept_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yida.safety.pojo.SysDeptRole">
+    update sys_dept_role
+    <set>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yida.safety.pojo.SysDeptRole">
+    update sys_dept_role
+    set dept_id = #{deptId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getRoleIdsByDeptId" resultType="java.lang.String">
+    select role_id
+    from sys_dept_role
+    where dept_id=#{deptId}
+  </select>
+
+  <!-- @Description:     删除该部门关联的角色-->
+  <delete id="removeRoleByDeptId">
+    delete
+    from sys_dept_role
+    where dept_id=#{deptId}
+  </delete>
+
+  <!-- @Description:     批量插入部门角色关联数据-->
+  <insert id="batchInsertDeptRole" parameterType="com.yida.safety.pojo.SysDeptRole">
+    INSERT into sys_dept_role(
+    id,
+    dept_id,
+    role_id,
+    create_time
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.id},
+      #{item.deptId},
+      #{item.roleId},
+      #{item.createTime}
+      )
+    </foreach>
+  </insert>
+  <select id="selectBydeptId" parameterType="java.lang.String" resultType="string">
+    select
+    id
+    from sys_dept_role
+    where dept_id = #{deptId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectDeptIdByRoleId" parameterType="java.lang.String" resultType="java.lang.String">
+    select dept_id
+    from sys_dept_role
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </select>
+<!--  //根据角色id删除关联数据/-->
+  <delete id="removeKeyByRoleId" parameterType="string">
+    delete from sys_dept_role
+    where role_id = #{roleId}
+  </delete>
+</mapper>
